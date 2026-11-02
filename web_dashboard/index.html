@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Olympic Sports Performance Analysis (1992 - 2026)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0284c7;
+      --accent-gold: #f59e0b;
+      --accent-silver: #94a3b8;
+      --accent-bronze: #b45309;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border-bottom: 2px solid var(--secondary); padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .logo-area { display: flex; align-items: center; gap: 1rem; }
+    .olympic-rings { display: flex; gap: 4px; }
+    .ring { width: 14px; height: 14px; border-radius: 50%; border: 3px solid; }
+    .ring-blue { border-color: #0284c7; }
+    .ring-yellow { border-color: #f59e0b; }
+    .ring-black { border-color: #f8fafc; }
+    .ring-green { border-color: #10b981; }
+    .ring-red { border-color: #ef4444; }
+    .header-title h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .header-title p { font-size: 0.85rem; color: var(--text-muted); }
+    
+    .nav-tabs { display: flex; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.35rem; border-radius: 8px; flex-wrap: wrap; }
+    .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+    .tab-btn.active, .tab-btn:hover { background: var(--secondary); color: #fff; }
+
+    main { flex: 1; padding: 1.5rem 2rem; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* KPI CARDS */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .kpi-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.2rem; position: relative; overflow: hidden; }
+    .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--secondary); }
+    .kpi-card.gold::before { background: var(--accent-gold); }
+    .kpi-card.green::before { background: var(--success); }
+    .kpi-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .kpi-value { font-size: 1.6rem; font-weight: 700; color: #fff; }
+    .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* GRID LAYOUTS */
+    .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .chart-grid-full { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1024px) { .chart-grid-2 { grid-template-columns: 1fr; } }
+
+    .chart-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; display: flex; flex-direction: column; }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem; }
+    .chart-header h3 { font-size: 1rem; font-weight: 600; color: #f1f5f9; }
+    .chart-header .badge { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; background: rgba(2,132,199,0.2); color: #38bdf8; }
+    .chart-canvas-container { position: relative; height: 320px; width: 100%; }
+
+    /* STORY VIEW */
+    .story-container { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .story-container { grid-template-columns: 1fr; } }
+    .story-sidebar { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem; }
+    .story-nav-item { padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,0.03); transition: all 0.2s; }
+    .story-nav-item:hover, .story-nav-item.active { background: rgba(2,132,199,0.15); border-color: var(--secondary); }
+    .story-nav-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; color: #fff; }
+    .story-nav-item p { font-size: 0.8rem; color: var(--text-muted); }
+    .story-display { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.5rem; }
+    .story-header { margin-bottom: 1.25rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; }
+    .story-header h2 { font-size: 1.3rem; color: #38bdf8; margin-bottom: 0.4rem; }
+    .story-meta { display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-muted); }
+    .story-insight-box { background: rgba(245,158,11,0.1); border-left: 4px solid var(--accent-gold); padding: 1rem; border-radius: 0 8px 8px 0; margin-top: 1rem; }
+
+    /* EPICS & TASKS TABLE */
+    .table-container { overflow-x: auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+    th { background: rgba(0,0,0,0.25); color: #38bdf8; padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid var(--card-border); }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: #e2e8f0; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .status-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.2); color: #34d399; }
+
+    footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-area">
+      <div class="olympic-rings">
+        <div class="ring ring-blue"></div>
+        <div class="ring ring-yellow"></div>
+        <div class="ring ring-black"></div>
+        <div class="ring ring-green"></div>
+        <div class="ring ring-red"></div>
+      </div>
+      <div class="header-title">
+        <h1>Global Olympic Sports Performance Analysis</h1>
+        <p>1992 - 2026 Historical Performance, Efficiency & Investment Intelligence</p>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('dash1')">Dashboard 1: Athletes & Yield</button>
+      <button class="tab-btn" onclick="switchTab('dash2')">Dashboard 2: Investment & Efficiency</button>
+      <button class="tab-btn" onclick="switchTab('story')">Tableau Story Mode</button>
+      <button class="tab-btn" onclick="switchTab('epics')">Epics &amp; Tasks (8/14)</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- GLOBAL KPI SUMMARY -->
+    <div class="kpi-grid">
+      <div class="kpi-card gold">
+        <div class="kpi-label">Top Per-Athlete Yield</div>
+        <div class="kpi-value">Rowing: 6.916</div>
+        <div class="kpi-sub">Followed by Shooting: 6.731</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Global Medal Leader</div>
+        <div class="kpi-value">United States: 735</div>
+        <div class="kpi-sub">China: 696 Total Medals</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Regional Efficiency Leader</div>
+        <div class="kpi-value">South America: 49.64%</div>
+        <div class="kpi-sub">Europe/Asia: 45.98%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Host Medal Champion</div>
+        <div class="kpi-value">Japan: 105 Medals</div>
+        <div class="kpi-sub">USA: 100 | China: 93</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Historical Medal Range</div>
+        <div class="kpi-value">305 (2000) &rarr; 363 (2020)</div>
+        <div class="kpi-sub">2026 Recorded: 334 Medals</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD 1: GLOBAL PERFORMANCE & ATHLETES -->
+    <div id="dash1" class="tab-content active">
+      <div class="chart-grid-2">
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Avg Medals per Athlete by Sport Category (Horizontal Bar)</h3>
+            <span class="badge">Scenario 1: Priya</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartAvgMedals"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Global Performance Metrics by Country (Top 12 Nations)</h3>
+            <span class="badge">Cumulative Medals</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartCountryMedals"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-grid-full">
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Trend of Total Medals Awarded Over the Years (1992 - 2026)</h3>
+            <span class="badge">Scenario 3: William Robert</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartYearlyTrend"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD 2: INVESTMENT & REGIONAL EFFICIENCY -->
+    <div id="dash2" class="tab-content">
+      <div class="chart-grid-2">
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Global Sports Investment vs. Medal Performance (Bubble Chart)</h3>
+            <span class="badge">Scenario 2: Carlos</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartBubbleInvestment"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Average Medal Efficiency Percentage by Region (Pie Chart)</h3>
+            <span class="badge">Regional Yield</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartRegionalEfficiency"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Comparing Medal Totals Across Olympic Hosts</h3>
+            <span class="badge">Host Advantage Effect</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartHostMedals"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-header">
+            <h3>Regional Medal Efficiency and Distribution by Sport</h3>
+            <span class="badge">Europe &amp; Asia Dominance</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartRegionalSportDonut"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY MODE -->
+    <div id="story" class="tab-content">
+      <div class="story-container">
+        <div class="story-sidebar">
+          <h3 style="margin-bottom:1rem; font-size:1rem; color:#38bdf8;">Olympic Stories</h3>
+          <div class="story-nav-item active" onclick="showStory(1)">
+            <h4>Scenario 1: Ms. Priya</h4>
+            <p>NOC Performance Strategist: High-Yield Disciplines</p>
+          </div>
+          <div class="story-nav-item" onclick="showStory(2)">
+            <h4>Scenario 2: Mr. Carlos</h4>
+            <p>Investment Analyst: Grant Efficiency &amp; Outliers</p>
+          </div>
+          <div class="story-nav-item" onclick="showStory(3)">
+            <h4>Scenario 3: William Robert</h4>
+            <p>Broadcast Storyteller: Host Advantage &amp; Evolution</p>
+          </div>
+        </div>
+
+        <div class="story-display">
+          <div id="story-point-1" class="story-point-content">
+            <div class="story-header">
+              <h2>Scenario 1: Ms. Priya — National Olympic Committee Performance Strategist</h2>
+              <div class="story-meta">
+                <span><strong>Role:</strong> NOC Performance Strategist</span>
+                <span><strong>Focus:</strong> High-Yield Category Identification</span>
+                <span><strong>Scope:</strong> 60 Countries &amp; 50 Sports</span>
+              </div>
+            </div>
+            <p style="line-height:1.6; color:#cbd5e1; margin-bottom:1rem;">
+              Priya is responsible for identifying which sports categories and disciplines to invest in ahead of the upcoming Olympic cycle. Making sense of historical medal data spread across 60 countries and 50 sports, Priya utilizes the <em>Avg Medals per Athlete by Sport Category</em> horizontal bar chart to identify disciplines with outsized medal returns.
+            </p>
+            <div class="story-insight-box">
+              <h4 style="color:#f59e0b; margin-bottom:0.4rem;">Key Strategic Insights for Priya:</h4>
+              <ul style="padding-left:1.2rem; color:#e2e8f0; font-size:0.9rem; line-height:1.5;">
+                <li><strong>Rowing (6.916 medals/athlete)</strong> and <strong>Shooting (6.731 medals/athlete)</strong> generate the highest per-athlete medal return across all 50 Olympic sports.</li>
+                <li>When benchmarked against superpowers like the <strong>United States (735 medals)</strong> and <strong>China (696 medals)</strong>, mid-sized nations cannot compete through broad dilution; they must concentrate capital in multi-event, high-yield categories.</li>
+                <li><strong>Recommendation:</strong> Reallocate 35% of national sports funding from low-yield single-medal sports into Rowing and Shooting talent academies to maximize quadrennial medal returns.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="story-point-2" class="story-point-content" style="display:none;">
+            <div class="story-header">
+              <h2>Scenario 2: Mr. Carlos — International Sports Investment Analyst</h2>
+              <div class="story-meta">
+                <span><strong>Role:</strong> Senior Sports Investment Analyst</span>
+                <span><strong>Focus:</strong> Capital Efficiency &amp; Overperforming Outliers</span>
+                <span><strong>Scope:</strong> Global Grants &amp; Regional Benchmarks</span>
+              </div>
+            </div>
+            <p style="line-height:1.6; color:#cbd5e1; margin-bottom:1rem;">
+              Carlos evaluates the correlation between national sports financial commitment and actual podium returns. Using the <em>Global Sports Investment vs. Medal Performance</em> bubble chart and regional efficiency metrics, Carlos discovers that capital alone does not determine podium yield.
+            </p>
+            <div class="story-insight-box">
+              <h4 style="color:#f59e0b; margin-bottom:0.4rem;">Key Strategic Insights for Carlos:</h4>
+              <ul style="padding-left:1.2rem; color:#e2e8f0; font-size:0.9rem; line-height:1.5;">
+                <li><strong>South America leads all regions</strong> with an average medal efficiency of <strong>49.64%</strong>, followed closely by Europe/Asia at <strong>45.98%</strong>.</li>
+                <li><strong>Overperforming Outliers Identified:</strong> Nations like <strong>Slovakia (62.4% efficiency on $45M)</strong>, <strong>Georgia (65.5% on $35M)</strong>, and <strong>Ethiopia (68.2% on $25M)</strong> punch far above their economic weight.</li>
+                <li><strong>Recommendation:</strong> Direct international development grants toward high-potential, capital-constrained regions like South America and Eastern Europe where marginal investment yields disproportionately high podium gains.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="story-point-3" class="story-point-content" style="display:none;">
+            <div class="story-header">
+              <h2>Scenario 3: William Robert — Broadcast Journalist &amp; Olympic Storyteller</h2>
+              <div class="story-meta">
+                <span><strong>Role:</strong> Investigative Sports Journalist &amp; Storyteller</span>
+                <span><strong>Focus:</strong> Documentary Series: The Modern Olympic Arc (1992 - 2026)</span>
+                <span><strong>Scope:</strong> Host Dominance &amp; Expansion Trends</span>
+              </div>
+            </div>
+            <p style="line-height:1.6; color:#cbd5e1; margin-bottom:1rem;">
+              William Robert (and Sanjay) crafts a multi-part broadcast documentary investigating the evolving geopolitical and athletic footprint of the Games. By examining the 34-year temporal trend and host country performance data, compelling storylines emerge.
+            </p>
+            <div class="story-insight-box">
+              <h4 style="color:#f59e0b; margin-bottom:0.4rem;">Key Documentary Story Arcs for Broadcast:</h4>
+              <ul style="padding-left:1.2rem; color:#e2e8f0; font-size:0.9rem; line-height:1.5;">
+                <li><strong>The Expansion Arc:</strong> Total medals awarded swung from a low of <strong>305 in Sydney 2000</strong> to a modern peak of <strong>363 in Tokyo 2020</strong>, stabilizing at <strong>334 in Milano-Cortina 2026</strong>.</li>
+                <li><strong>The Home Advantage Phenom:</strong> Host nations experience massive podium surges: <strong>Japan led all hosts with 105 medals (2020)</strong>, followed by the <strong>United States with 100 medals (1996)</strong> and <strong>China with 93 medals (2008)</strong>.</li>
+                <li><strong>Regional Dominance:</strong> Europe and Asia have historically captured over 68% of all awarded medals, creating a vibrant regional rivalry across both Summer and Winter disciplines.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EPICS & TASKS (8 EPICS, 14 TASKS) -->
+    <div id="epics" class="tab-content">
+      <div class="table-container">
+        <h3 style="margin-bottom:1rem; color:#38bdf8;">Agile Capstone Structure: 8 Epics &amp; 14 Tasks</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Epic ID</th>
+              <th>Epic Name</th>
+              <th>Task ID</th>
+              <th>Task Description</th>
+              <th>Artifact / Deliverable</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Epic 1</strong></td>
+              <td>Project Scoping &amp; Stakeholder Architecture</td>
+              <td>Task 1</td>
+              <td>Define Problem Statement, Personas (Priya, Carlos, William) &amp; Requirements</td>
+              <td>Scope Document &amp; Stakeholder Matrix</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 1</strong></td>
+              <td>Project Scoping &amp; Stakeholder Architecture</td>
+              <td>Task 2</td>
+              <td>System Requirements &amp; Technical Architecture Specification</td>
+              <td>Architecture Design &amp; Environment Setup</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 2</strong></td>
+              <td>Data Collection &amp; Schema Modeling</td>
+              <td>Task 3</td>
+              <td>Ingest &amp; Synthesize 60 Countries, 50 Sports Datasets (1992–2026)</td>
+              <td><code>athletes.csv</code>, <code>medal_results.csv</code></td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 3</strong></td>
+              <td>Data Preprocessing &amp; Quality Engineering</td>
+              <td>Task 4</td>
+              <td>Data Cleaning, Imputation, Boundary Reconciliations &amp; Validation</td>
+              <td>Python Data Preprocessing Pipeline</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 3</strong></td>
+              <td>Data Preprocessing &amp; Quality Engineering</td>
+              <td>Task 5</td>
+              <td>Build Star Schema &amp; Denormalized Master Dataset</td>
+              <td><code>olympic_clean_master.csv</code> (27,557 rows)</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 4</strong></td>
+              <td>Exploratory Data Analysis &amp; Metric Engineering</td>
+              <td>Task 6</td>
+              <td>Conduct EDA on Country Medals, Host Nation Effect &amp; Temporal Trends</td>
+              <td>Descriptive Statistics &amp; EDA Visuals</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 4</strong></td>
+              <td>Exploratory Data Analysis &amp; Metric Engineering</td>
+              <td>Task 7</td>
+              <td>Engineer Tableau Calculated Fields: Avg Medals/Athlete &amp; Efficiency %</td>
+              <td>Tableau Calculated Field Formulas</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 5</strong></td>
+              <td>Dashboard 1: Global Performance &amp; Athletes</td>
+              <td>Task 8</td>
+              <td>Build Avg Medals/Athlete (Rowing 6.916, Shooting 6.731) &amp; Country Bars</td>
+              <td>Tableau Worksheet 1 &amp; 2, Dashboard 1</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 6</strong></td>
+              <td>Dashboard 2: Regional Efficiency &amp; Investment</td>
+              <td>Task 9</td>
+              <td>Build Investment vs Medals Bubble Chart, Regional Efficiency Pie (49.64%)</td>
+              <td>Tableau Worksheet 4, 5 &amp; 6, Dashboard 2</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 7</strong></td>
+              <td>Tableau Storytelling &amp; Guided Scenarios</td>
+              <td>Task 10</td>
+              <td>Create Guided Tableau Story for Priya, Carlos &amp; William Robert</td>
+              <td>Tableau Story Points &amp; Scenario Layout</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 7</strong></td>
+              <td>Tableau Storytelling &amp; Guided Scenarios</td>
+              <td>Task 11</td>
+              <td>Implement Interactive Action Filters, Cross-Highlighting &amp; Tooltips</td>
+              <td>Tableau Interactivity &amp; Navigation</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 8</strong></td>
+              <td>Executive Reporting &amp; Deployment</td>
+              <td>Task 12</td>
+              <td>Compile Comprehensive NOC &amp; Sports Investment Strategic Report</td>
+              <td>Executive Strategic Analytics Report</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 8</strong></td>
+              <td>Executive Reporting &amp; Deployment</td>
+              <td>Task 13</td>
+              <td>Package Tableau Workbook (<code>.twb</code>/<code>.twbx</code>) &amp; Public Publishing Guide</td>
+              <td><code>Global_Olympic_Sports_Performance.twb</code></td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+            <tr>
+              <td><strong>Epic 8</strong></td>
+              <td>Executive Reporting &amp; Deployment</td>
+              <td>Task 14</td>
+              <td>Project Quality Audit, Metric Verification &amp; Final Handover</td>
+              <td>Verification Suite &amp; Documentation</td>
+              <td><span class="status-badge">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Global Olympic Sports Performance Analysis Capstone &bull; Built for Tableau Desktop &amp; Tableau Public &bull; 1992 - 2026 Historical Performance Analytics</p>
+  </footer>
+
+  <script>
+    // Tab switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Story Point switching
+    function showStory(num) {
+      document.querySelectorAll('.story-point-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.story-nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('story-point-' + num).style.display = 'block';
+      event.currentTarget.classList.add('active');
+    }
+
+    // Initialize Charts on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Avg Medals per Athlete (Horizontal Bar)
+      new Chart(document.getElementById('chartAvgMedals'), {
+        type: 'bar',
+        data: {
+          labels: ['Rowing', 'Shooting', 'Sailing', 'Gymnastics Art.', 'Canoe Sprint', 'Cycling Track', 'Swimming', 'Athletics', 'Equestrian', 'Judo', 'Weightlifting', 'Boxing'],
+          datasets: [{
+            label: 'Avg Medals per Athlete',
+            data: [6.916, 6.731, 4.900, 4.800, 5.000, 4.700, 4.600, 4.500, 4.400, 3.900, 3.800, 3.700],
+            backgroundColor: (ctx) => ctx.dataIndex === 0 ? '#f59e0b' : (ctx.dataIndex === 1 ? '#fbbf24' : '#0284c7'),
+            borderRadius: 4
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            y: { grid: { display: false }, ticks: { color: '#f8fafc' } }
+          }
+        }
+      });
+
+      // 2. Global Performance Metrics by Country
+      new Chart(document.getElementById('chartCountryMedals'), {
+        type: 'bar',
+        data: {
+          labels: ['USA', 'China', 'Great Britain', 'Germany', 'Australia', 'Japan', 'France', 'Italy', 'S. Korea', 'Netherlands', 'Canada', 'Hungary'],
+          datasets: [{
+            label: 'Total Medals Won',
+            data: [735, 696, 340, 325, 295, 260, 250, 240, 210, 185, 175, 145],
+            backgroundColor: (ctx) => ctx.dataIndex === 0 ? '#38bdf8' : (ctx.dataIndex === 1 ? '#ef4444' : '#64748b'),
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            x: { grid: { display: false }, ticks: { color: '#f8fafc' } }
+          }
+        }
+      });
+
+      // 3. Trend of Total Medals Awarded Over the Years (1992 - 2026)
+      new Chart(document.getElementById('chartYearlyTrend'), {
+        type: 'line',
+        data: {
+          labels: ['1992 (Barcelona)', '1996 (Atlanta)', '2000 (Sydney - Low)', '2004 (Athens)', '2008 (Beijing)', '2012 (London)', '2016 (Rio)', '2020 (Tokyo - Peak)', '2026 (Milan-Cortina)'],
+          datasets: [{
+            label: 'Total Medals Awarded',
+            data: [312, 322, 305, 328, 345, 350, 356, 363, 334],
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.15)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: (ctx) => [2, 7, 8].includes(ctx.dataIndex) ? '#ef4444' : '#f59e0b',
+            pointRadius: (ctx) => [2, 7, 8].includes(ctx.dataIndex) ? 7 : 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 280, max: 380, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            x: { grid: { display: false }, ticks: { color: '#f8fafc' } }
+          }
+        }
+      });
+
+      // 4. Bubble Chart: Investment vs Medals
+      new Chart(document.getElementById('chartBubbleInvestment'), {
+        type: 'bubble',
+        data: {
+          datasets: [
+            {
+              label: 'Overperforming Outliers',
+              data: [
+                { x: 45, y: 36, r: 18, name: 'Slovakia (62.4%)' },
+                { x: 35, y: 38, r: 20, name: 'Georgia (65.5%)' },
+                { x: 25, y: 32, r: 22, name: 'Ethiopia (68.2%)' },
+                { x: 30, y: 45, r: 21, name: 'Kenya (67.5%)' }
+              ],
+              backgroundColor: 'rgba(245, 158, 11, 0.75)'
+            },
+            {
+              label: 'Major Nations',
+              data: [
+                { x: 1250, y: 735, r: 12, name: 'USA (44.5%)' },
+                { x: 1180, y: 696, r: 12, name: 'China (44.8%)' },
+                { x: 540, y: 340, r: 14, name: 'Great Britain (47.5%)' },
+                { x: 510, y: 325, r: 13, name: 'Germany (46.2%)' },
+                { x: 480, y: 295, r: 13, name: 'Australia (46.1%)' },
+                { x: 560, y: 260, r: 12, name: 'Japan (45.1%)' }
+              ],
+              backgroundColor: 'rgba(2, 132, 199, 0.65)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.raw.name}: $${ctx.raw.x}M Invested, ${ctx.raw.y} Medals`
+              }
+            }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Total Sports Investment ($ Millions)', color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            y: { title: { display: true, text: 'Total Medals Won', color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+          }
+        }
+      });
+
+      // 5. Regional Efficiency Pie Chart
+      new Chart(document.getElementById('chartRegionalEfficiency'), {
+        type: 'pie',
+        data: {
+          labels: ['South America (Lead: 49.64%)', 'Europe/Asia (45.98%)', 'Africa (51.61%)', 'Oceania (48.97%)', 'North America (48.71%)'],
+          datasets: [{
+            data: [49.64, 45.98, 51.61, 48.97, 48.71],
+            backgroundColor: ['#10b981', '#0284c7', '#f59e0b', '#8b5cf6', '#ec4899']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#f8fafc', font: { size: 11 } } }
+          }
+        }
+      });
+
+      // 6. Host Medals Bar Chart
+      new Chart(document.getElementById('chartHostMedals'), {
+        type: 'bar',
+        data: {
+          labels: ['Japan (2020)', 'USA (1996)', 'China (2008)', 'Great Britain (2012)', 'Australia (2000)', 'Italy (2026)', 'Spain (1992)', 'Brazil (2016)', 'Greece (2004)'],
+          datasets: [{
+            label: 'Medals Won as Host Nation',
+            data: [105, 100, 93, 65, 58, 35, 22, 19, 16],
+            backgroundColor: (ctx) => ctx.dataIndex === 0 ? '#10b981' : (ctx.dataIndex === 1 ? '#0284c7' : (ctx.dataIndex === 2 ? '#ef4444' : '#64748b')),
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            x: { grid: { display: false }, ticks: { color: '#f8fafc' } }
+          }
+        }
+      });
+
+      // 7. Regional Sport Donut Chart
+      new Chart(document.getElementById('chartRegionalSportDonut'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Europe/Asia Dominance', 'North America', 'Africa', 'South America', 'Oceania'],
+          datasets: [{
+            data: [68.4, 16.2, 5.8, 5.1, 4.5],
+            backgroundColor: ['#0284c7', '#38bdf8', '#f59e0b', '#10b981', '#8b5cf6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#f8fafc', font: { size: 11 } } }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

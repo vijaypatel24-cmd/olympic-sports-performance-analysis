@@ -1,0 +1,61 @@
+Country,NOC,Region,Total_Investment_USD_Millions,Annual_HighPerf_Budget_M,Grassroots_Fund_M,Infrastructure_Spend_M,Total_Medals,Medal_Efficiency_Pct,Efficiency_Category
+United States,USA,North America,1250,562.5,312.5,375.0,735,44.5,Standard Return
+Canada,CAN,North America,360,162.0,90.0,108.0,175,43.8,Standard Return
+Cuba,CUB,North America,70,31.5,17.5,21.0,85,55.4,Above Average
+Jamaica,JAM,North America,40,18.0,10.0,12.0,68,58.2,Above Average
+Mexico,MEX,North America,130,58.5,32.5,39.0,42,42.1,Standard Return
+Dominican Republic,DOM,North America,35,15.8,8.8,10.5,22,45.0,Standard Return
+Bahamas,BAH,North America,20,9.0,5.0,6.0,16,52.0,Above Average
+Brazil,BRA,South America,210,94.5,52.5,63.0,130,52.4,Above Average
+Argentina,ARG,South America,120,54.0,30.0,36.0,68,48.2,Above Average
+Colombia,COL,South America,85,38.2,21.2,25.5,52,50.12,Above Average
+Chile,CHI,South America,65,29.2,16.2,19.5,34,47.84,Standard Return
+Kenya,KEN,Africa,30,13.5,7.5,9.0,45,67.5,High Return (Overperformer)
+South Africa,RSA,Africa,90,40.5,22.5,27.0,48,46.2,Standard Return
+Ethiopia,ETH,Africa,25,11.2,6.2,7.5,32,68.2,High Return (Overperformer)
+Egypt,EGY,Africa,65,29.2,16.2,19.5,32,45.0,Standard Return
+Nigeria,NGR,Africa,50,22.5,12.5,15.0,25,44.1,Standard Return
+Morocco,MAR,Africa,45,20.2,11.2,13.5,24,45.5,Standard Return
+Algeria,ALG,Africa,40,18.0,10.0,12.0,20,44.8,Standard Return
+Australia,AUS,Oceania,480,216.0,120.0,144.0,295,46.1,Standard Return
+New Zealand,NZL,Oceania,160,72.0,40.0,48.0,95,48.8,Above Average
+Fiji,FIJ,Oceania,20,9.0,5.0,6.0,12,52.0,Above Average
+China,CHN,Europe/Asia,1180,531.0,295.0,354.0,696,44.8,Standard Return
+Great Britain,GBR,Europe/Asia,540,243.0,135.0,162.0,340,47.5,Standard Return
+Germany,GER,Europe/Asia,510,229.5,127.5,153.0,325,46.2,Standard Return
+Japan,JPN,Europe/Asia,560,252.0,140.0,168.0,260,45.1,Standard Return
+France,FRA,Europe/Asia,490,220.5,122.5,147.0,250,44.9,Standard Return
+Italy,ITA,Europe/Asia,420,189.0,105.0,126.0,240,45.8,Standard Return
+South Korea,KOR,Europe/Asia,380,171.0,95.0,114.0,210,45.2,Standard Return
+Netherlands,NED,Europe/Asia,320,144.0,80.0,96.0,185,46.8,Standard Return
+Hungary,HUN,Europe/Asia,180,81.0,45.0,54.0,145,48.1,Above Average
+Norway,NOR,Europe/Asia,240,108.0,60.0,72.0,140,47.2,Standard Return
+Spain,ESP,Europe/Asia,280,126.0,70.0,84.0,120,45.0,Standard Return
+Sweden,SWE,Europe/Asia,220,99.0,55.0,66.0,115,46.0,Standard Return
+Switzerland,SUI,Europe/Asia,210,94.5,52.5,63.0,105,45.6,Standard Return
+Poland,POL,Europe/Asia,190,85.5,47.5,57.0,98,45.1,Standard Return
+Ukraine,UKR,Europe/Asia,150,67.5,37.5,45.0,92,48.0,Above Average
+Czech Republic,CZE,Europe/Asia,160,72.0,40.0,48.0,85,46.5,Standard Return
+Denmark,DEN,Europe/Asia,170,76.5,42.5,51.0,80,45.2,Standard Return
+Romania,ROU,Europe/Asia,140,63.0,35.0,42.0,75,46.0,Standard Return
+Austria,AUT,Europe/Asia,165,74.2,41.2,49.5,70,45.3,Standard Return
+Belgium,BEL,Europe/Asia,155,69.8,38.8,46.5,62,44.6,Standard Return
+Turkey,TUR,Europe/Asia,145,65.2,36.2,43.5,60,44.2,Standard Return
+Greece,GRE,Europe/Asia,130,58.5,32.5,39.0,58,44.8,Standard Return
+Kazakhstan,KAZ,Europe/Asia,110,49.5,27.5,33.0,52,46.2,Standard Return
+Finland,FIN,Europe/Asia,120,54.0,30.0,36.0,50,44.5,Standard Return
+Croatia,CRO,Europe/Asia,80,36.0,20.0,24.0,48,49.0,Above Average
+Iran,IRI,Europe/Asia,95,42.8,23.8,28.5,46,47.1,Standard Return
+Uzbekistan,UZB,Europe/Asia,85,38.2,21.2,25.5,44,48.0,Above Average
+Serbia,SRB,Europe/Asia,75,33.8,18.8,22.5,42,48.5,Above Average
+Ireland,IRL,Europe/Asia,95,42.8,23.8,28.5,40,44.9,Standard Return
+Georgia,GEO,Europe/Asia,35,15.8,8.8,10.5,38,65.5,High Return (Overperformer)
+Slovakia,SVK,Europe/Asia,45,20.2,11.2,13.5,36,62.4,High Return (Overperformer)
+India,IND,Europe/Asia,160,72.0,40.0,48.0,35,39.5,Standard Return
+Bulgaria,BUL,Europe/Asia,70,31.5,17.5,21.0,35,43.5,Standard Return
+Chinese Taipei,TPE,Europe/Asia,90,40.5,22.5,27.0,34,42.0,Standard Return
+Portugal,POR,Europe/Asia,90,40.5,22.5,27.0,32,41.5,Standard Return
+Indonesia,INA,Europe/Asia,80,36.0,20.0,24.0,32,41.2,Standard Return
+Slovenia,SLO,Europe/Asia,65,29.2,16.2,19.5,32,42.0,Standard Return
+Thailand,THA,Europe/Asia,75,33.8,18.8,22.5,30,41.0,Standard Return
+Azerbaijan,AZE,Europe/Asia,60,27.0,15.0,18.0,30,38.4,Standard Return

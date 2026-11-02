@@ -1,0 +1,51 @@
+Sport_Category,Sport_Group,Total_Athletes,Total_Medals,Avg_Medals_Per_Athlete
+Rowing,Rowing / Water,250,1729,6.916
+Shooting,Target / Precision,52,350,6.731
+Canoe Sprint,Canoe / Water,120,600,5.0
+Sailing,Water Sports,160,784,4.9
+Gymnastics Artistic,Gymnastics,220,1056,4.8
+Cycling Track,Cycling,180,846,4.7
+Swimming,Aquatics,500,2300,4.6
+Athletics,Track & Field,800,3600,4.5
+Equestrian,Equestrian,140,616,4.4
+Diving,Aquatics,110,462,4.2
+Fencing,Precision Combat,160,656,4.1
+Wrestling Freestyle,Combat,190,760,4.0
+Judo,Combat,210,819,3.9
+Weightlifting,Strength,180,684,3.8
+Boxing,Combat,200,740,3.7
+Archery,Precision,120,432,3.6
+Badminton,Racquet,130,455,3.5
+Table Tennis,Racquet,130,442,3.4
+Tennis,Racquet,140,462,3.3
+Taekwondo,Combat,110,352,3.2
+Triathlon,Endurance,90,279,3.1
+Cycling Road,Cycling,160,480,3.0
+Cycling Mountain Bike,Cycling,80,232,2.9
+Cycling BMX,Cycling,70,196,2.8
+Artistic Swimming,Aquatics,90,252,2.8
+Water Polo,Aquatics Team,140,392,2.8
+Modern Pentathlon,Multisport,70,196,2.8
+Skateboarding,Urban,80,216,2.7
+Surfing,Water Sports,70,182,2.6
+Sport Climbing,Urban,70,182,2.6
+Golf,Precision,90,225,2.5
+Trampoline,Gymnastics,50,125,2.5
+Beach Volleyball,Team,80,200,2.5
+Volleyball,Team,150,375,2.5
+Basketball,Team,150,360,2.4
+Football,Team,180,432,2.4
+Handball,Team,150,360,2.4
+Field Hockey,Team,150,360,2.4
+Rugby Sevens,Team,130,312,2.4
+Alpine Skiing,Winter Snow,180,540,3.0
+Biathlon,Winter Snow,160,480,3.0
+Cross Country Skiing,Winter Snow,170,510,3.0
+Figure Skating,Winter Ice,110,330,3.0
+Freestyle Skiing,Winter Snow,120,348,2.9
+Ice Hockey,Winter Ice,180,504,2.8
+Luge,Winter Sliding,80,224,2.8
+Nordic Combined,Winter Snow,70,196,2.8
+Short Track Speed Skating,Winter Ice,120,336,2.8
+Skeleton,Winter Sliding,60,168,2.8
+Speed Skating,Winter Ice,150,420,2.8
